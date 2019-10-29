@@ -1,4 +1,4 @@
-package com.atguigu.gmall.pms.config;
+package com.atguigu.gmall.sms.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;

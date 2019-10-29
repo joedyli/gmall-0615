@@ -11,6 +11,7 @@
         <module name="gmall-sms" />
         <module name="gmall-core" />
         <module name="gmall-oms" />
+        <module name="gmall-gateway" />
         <module name="gmall-generator" />
         <module name="gmall-pms" />
         <module name="gmall-admin" />
@@ -20,6 +21,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="gmall-admin" options="-parameters" />
+      <module name="gmall-gateway" options="-parameters" />
       <module name="gmall-generator" options="-parameters" />
       <module name="gmall-oms" options="-parameters" />
       <module name="gmall-pms" options="-parameters" />
