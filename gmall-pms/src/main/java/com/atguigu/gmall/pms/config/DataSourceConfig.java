@@ -15,7 +15,7 @@ public class DataSourceConfig {
     @Bean
     @Primary
     @ConfigurationProperties("spring.datasource")
-    public DataSource dataSource(@Value("spring.datasource.url")String url){
+    public DataSource dataSource(@Value("${spring.datasource.url}")String url){
 
         HikariDataSource hikariDataSource = new HikariDataSource();
         hikariDataSource.setJdbcUrl(url);
