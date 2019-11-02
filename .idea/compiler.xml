@@ -13,6 +13,7 @@
         <module name="gmall-oms" />
         <module name="gmall-gateway" />
         <module name="gmall-generator" />
+        <module name="gmall-sms-interface" />
         <module name="gmall-pms" />
         <module name="gmall-admin" />
       </profile>
