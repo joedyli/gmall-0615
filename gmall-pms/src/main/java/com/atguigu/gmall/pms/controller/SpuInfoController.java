@@ -2,13 +2,16 @@ package com.atguigu.gmall.pms.controller;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
 
 
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
 import com.atguigu.gmall.pms.vo.SpuInfoVO;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,18 @@ public class SpuInfoController {
         PageVo pageVo = spuInfoService.querySpuInfoByKeyPage(catId, condition);
 
         return Resp.ok(pageVo);
+    }
+
+    /**
+     * 列表
+     */
+    @ApiOperation("分页查询(排序)")
+    @PostMapping("/list")
+    @PreAuthorize("hasAuthority('pms:spuinfo:list')")
+    public Resp<List<SpuInfoEntity>> querySpuPage(@RequestBody QueryCondition queryCondition) {
+        PageVo page = spuInfoService.queryPage(queryCondition);
+
+        return Resp.ok((List<SpuInfoEntity>)page.getList());
     }
 
     /**
