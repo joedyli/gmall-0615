@@ -13,12 +13,12 @@
         <module name="gmall-oms" />
         <module name="gmall-gateway" />
         <module name="gmall-pms-interface" />
-        <module name="gmall-wms-interface" />
         <module name="gmall-generator" />
         <module name="gmall-search" />
         <module name="gmall-sms-interface" />
-        <module name="gmall-pms" />
         <module name="gmall-admin" />
+        <module name="gmall-wms-interface" />
+        <module name="gmall-pms" />
       </profile>
     </annotationProcessing>
   </component>
