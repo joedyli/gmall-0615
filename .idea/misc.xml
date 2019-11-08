@@ -16,6 +16,7 @@
         <option value="$PROJECT_DIR$/gmall-generator/pom.xml" />
         <option value="$PROJECT_DIR$/gmall-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/gmall-search/pom.xml" />
+        <option value="$PROJECT_DIR$/gmall-index/pom.xml" />
       </list>
     </option>
   </component>

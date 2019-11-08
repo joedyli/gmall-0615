@@ -15,6 +15,7 @@ public class GmallCorsConfig {
         // cors配置对象
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:1000"); // 允许那些域名跨域请求
+        configuration.addAllowedOrigin("http://localhost:2000"); // 允许那些域名跨域请求
         configuration.addAllowedHeader("*"); // 允许跨域请求携带的头信息
         configuration.addAllowedMethod("*"); // 允许跨域请求的方法
         configuration.setAllowCredentials(true); // 是否允许携带cookie信息
