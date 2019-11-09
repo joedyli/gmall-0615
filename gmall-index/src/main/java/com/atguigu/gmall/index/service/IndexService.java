@@ -2,11 +2,13 @@ package com.atguigu.gmall.index.service;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.core.bean.Resp;
+import com.atguigu.gmall.index.annotation.GmallCache;
 import com.atguigu.gmall.index.feign.GmallPmsClient;
 import com.atguigu.gmall.pms.entity.CategoryEntity;
 import com.atguigu.gmall.pms.vo.CategoryVO;
 import net.bytebuddy.asm.Advice;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RCountDownLatch;
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
@@ -15,6 +17,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -39,7 +42,7 @@ public class IndexService {
     @Autowired
     private RedissonClient redissonClient;
 
-    private static final String KEY_PREFIX = "index:category:";
+    private static final String KEY_PREFIX = "index:category";
 
     public List<CategoryEntity> queryLevel1Category() {
 
@@ -47,19 +50,20 @@ public class IndexService {
         return resp.getData();
     }
 
+    @GmallCache(prefix = KEY_PREFIX, timeout = 300000l, random = 50000l)
     public List<CategoryVO> queryCategoryVO(Long pid) {
         // 1. 查询缓存，缓存中有的话直接返回
-        String cache = this.redisTemplate.opsForValue().get(KEY_PREFIX + pid);
-        if (StringUtils.isNotBlank(cache)) {
-            return JSON.parseArray(cache, CategoryVO.class);
-        }
+//        String cache = this.redisTemplate.opsForValue().get(KEY_PREFIX + pid);
+//        if (StringUtils.isNotBlank(cache)) {
+//            return JSON.parseArray(cache, CategoryVO.class);
+//        }
 
         // 2. 如果缓存中没有，查询数据库
         Resp<List<CategoryVO>> listResp = this.gmallPmsClient.queryCategoryWithSub(pid);
         List<CategoryVO> categoryVOS = listResp.getData();
 
-        // 3. 查询完成之后，放入缓存
-        this.redisTemplate.opsForValue().set(KEY_PREFIX + pid, JSON.toJSONString(categoryVOS));
+//        // 3. 查询完成之后，放入缓存
+//        this.redisTemplate.opsForValue().set(KEY_PREFIX + pid, JSON.toJSONString(categoryVOS), 5 + (int) (Math.random() * 5), TimeUnit.DAYS);
 
         return categoryVOS;
     }
@@ -141,5 +145,28 @@ public class IndexService {
 
 //        readWriteLock.writeLock().unlock();
         return "数据写入成功。。 " + msg;
+    }
+
+    public String latch() throws InterruptedException {
+
+        RCountDownLatch latchDown = this.redissonClient.getCountDownLatch("latchDown");
+
+//        String countString = this.redisTemplate.opsForValue().get("count");
+//        int count = Integer.parseInt(countString);
+        latchDown.trySetCount(5);
+
+        latchDown.await();
+        return "班长锁门。。。。。";
+    }
+
+    public String out() {
+        RCountDownLatch latchDown = this.redissonClient.getCountDownLatch("latchDown");
+
+//        String countString = this.redisTemplate.opsForValue().get("count");
+//        int count = Integer.parseInt(countString);
+//        this.redisTemplate.opsForValue().set("count", String.valueOf(--count));
+
+        latchDown.countDown();
+        return "出来了一个人。。。。";
     }
 }

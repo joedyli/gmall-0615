@@ -2,15 +2,17 @@ package com.atguigu.gmall.pms.service.impl;
 
 import com.atguigu.gmall.pms.dao.AttrAttrgroupRelationDao;
 import com.atguigu.gmall.pms.dao.AttrDao;
+import com.atguigu.gmall.pms.dao.ProductAttrValueDao;
 import com.atguigu.gmall.pms.entity.AttrAttrgroupRelationEntity;
 import com.atguigu.gmall.pms.entity.AttrEntity;
+import com.atguigu.gmall.pms.entity.ProductAttrValueEntity;
 import com.atguigu.gmall.pms.vo.AttrGroupVO;
+import com.atguigu.gmall.pms.vo.GroupVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,6 +33,9 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Autowired
     private AttrAttrgroupRelationDao relationDao;
+
+    @Autowired
+    private ProductAttrValueDao productAttrValueDao;
 
     @Autowired
     private AttrDao attrDao;
@@ -95,6 +100,21 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
         // 查询每个组下的所有规格参数
         return groupEntities.stream().map(attrGroupEntity -> this.queryGroupWithAttrs(attrGroupEntity.getAttrGroupId())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GroupVO> queryGroupVOByCid(Long cid, Long spuId) {
+        List<AttrGroupEntity> attrGroupEntities = this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", cid));
+        if (CollectionUtils.isEmpty(attrGroupEntities)){
+            return null;
+        }
+        return attrGroupEntities.stream().map(attrGroupEntity -> {
+            GroupVO groupVO = new GroupVO();
+            groupVO.setGroupName(attrGroupEntity.getAttrGroupName());
+            List<ProductAttrValueEntity> productAttrValueEntities = this.productAttrValueDao.queryByGidAndSpuId(spuId, attrGroupEntity.getAttrGroupId());
+            groupVO.setBaseAttrValues(productAttrValueEntities);
+            return groupVO;
+        }).collect(Collectors.toList());
     }
 
 }

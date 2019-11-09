@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="gmall-item" />
         <module name="gmall-sms-interface" />
         <module name="gmall-oms" />
         <module name="gmall-pms" />
@@ -29,6 +30,7 @@
       <module name="gmall-gateway" options="-parameters" />
       <module name="gmall-generator" options="-parameters" />
       <module name="gmall-index" options="-parameters" />
+      <module name="gmall-item" options="-parameters" />
       <module name="gmall-oms" options="-parameters" />
       <module name="gmall-pms" options="-parameters" />
       <module name="gmall-search" options="-parameters" />
