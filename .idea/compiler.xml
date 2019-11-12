@@ -19,6 +19,7 @@
         <module name="gmall-gateway" />
         <module name="gmall-index" />
         <module name="gmall-wms-interface" />
+        <module name="gmall-ums-interface" />
         <module name="gmall-core" />
         <module name="gmall-auth" />
         <module name="gmall-search" />

@@ -35,11 +35,7 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("query")
-    public Resp<MemberEntity> queryUser(@RequestParam("username")String userName, @RequestParam("password")String password, HttpServletResponse response){
-
-        Cookie cookie = new Cookie("token", "xxxxxxxx");
-
-        response.addCookie(cookie);
+    public Resp<MemberEntity> queryUser(@RequestParam("username")String userName, @RequestParam("password")String password){
 
         MemberEntity memberEntity = this.memberService.queryUser(userName, password);
         return Resp.ok(memberEntity);
