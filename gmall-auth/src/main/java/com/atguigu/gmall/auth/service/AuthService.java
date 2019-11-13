@@ -8,6 +8,7 @@ import com.atguigu.gmall.auth.feign.GmallUmsClient;
 import com.atguigu.gmall.ums.entity.MemberEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
