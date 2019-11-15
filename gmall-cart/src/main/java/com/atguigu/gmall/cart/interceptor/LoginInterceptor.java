@@ -3,7 +3,7 @@ package com.atguigu.gmall.cart.interceptor;
 import com.atguigu.core.utils.CookieUtils;
 import com.atguigu.core.utils.JwtUtils;
 import com.atguigu.gmall.cart.config.JwtProperties;
-import com.atguigu.gmall.cart.vo.UserInfo;
+import com.atguigu.core.bean.UserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

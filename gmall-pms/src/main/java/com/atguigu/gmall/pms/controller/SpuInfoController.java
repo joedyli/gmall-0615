@@ -2,6 +2,7 @@ package com.atguigu.gmall.pms.controller;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
@@ -14,6 +15,7 @@ import com.atguigu.gmall.pms.vo.SpuInfoVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,9 @@ import com.atguigu.gmall.pms.service.SpuInfoService;
 public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @GetMapping
     public Resp<PageVo> querySpuInfoByKeyPage(@RequestParam(value = "catId", defaultValue = "0")Long catId, QueryCondition condition){
@@ -102,8 +107,15 @@ public class SpuInfoController {
     @PreAuthorize("hasAuthority('pms:spuinfo:update')")
     public Resp<Object> update(@RequestBody SpuInfoEntity spuInfo){
 		spuInfoService.updateById(spuInfo);
-
+        this.sendMsg(spuInfo.getId(), "update");
         return Resp.ok(null);
+    }
+
+    private void sendMsg(Long spuId, String type) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", spuId);
+        map.put("type", type);
+        this.amqpTemplate.convertAndSend("GMALL-ITEM-EXCHANGE", "item." + type, map);
     }
 
     /**
