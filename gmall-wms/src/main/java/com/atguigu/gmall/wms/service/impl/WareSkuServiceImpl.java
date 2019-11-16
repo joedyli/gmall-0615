@@ -1,13 +1,21 @@
 package com.atguigu.gmall.wms.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.wms.vo.SkuLockVO;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,6 +29,7 @@ import com.atguigu.gmall.wms.dao.WareSkuDao;
 import com.atguigu.gmall.wms.entity.WareSkuEntity;
 import com.atguigu.gmall.wms.service.WareSkuService;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.SocketUtils;
 
 
 @Service("wareSkuService")
@@ -31,6 +40,12 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
 
     @Autowired
     private WareSkuDao wareSkuDao;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public PageVo queryPage(QueryCondition params) {
@@ -62,9 +77,15 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             return "锁定失败：" + error.stream().map(skuLockVO -> skuLockVO.getSkuId()).collect(Collectors.toList()).toString();
         }
 
+        // 保存锁定库存的信息到redis中
+        String orderToken = skuLockVOS.get(0).getOrderToken();
+        this.redisTemplate.opsForValue().set("order:stock:" + orderToken, JSON.toJSONString(skuLockVOS));
+
+        // 发送延时消息，20分钟解锁库存
+        this.amqpTemplate.convertAndSend("WMS-EXCHANGE", "wms.unlock", orderToken);
+
         return null;
     }
-
 
     private void lockSku(SkuLockVO skuLockVO) {
 
@@ -83,4 +104,5 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
 
         lock.unlock();
     }
+
 }

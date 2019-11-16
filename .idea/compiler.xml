@@ -7,25 +7,26 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="gmall-item" />
-        <module name="gmall-sms-interface" />
         <module name="gmall-oms" />
-        <module name="gmall-pms" />
+        <module name="gmall-order" />
         <module name="gmall-cart" />
         <module name="gmall-sms" />
         <module name="gmall-ums" />
-        <module name="gmall-order" />
         <module name="gmall-wms" />
         <module name="gmall-pms-interface" />
+        <module name="gmall-generator" />
+        <module name="gmall-index" />
+        <module name="gmall-gateway" />
+        <module name="gmall-oms-interface" />
+        <module name="gmall-ums-interface" />
+        <module name="gmall-pms" />
+        <module name="gmall-sms-interface" />
         <module name="gmall-admin" />
         <module name="gmall-wms-interface" />
-        <module name="gmall-ums-interface" />
-        <module name="gmall-gateway" />
-        <module name="gmall-index" />
-        <module name="gmall-generator" />
-        <module name="gmall-cart-interface" />
+        <module name="gmall-search" />
         <module name="gmall-core" />
         <module name="gmall-auth" />
-        <module name="gmall-search" />
+        <module name="gmall-cart-interface" />
       </profile>
     </annotationProcessing>
   </component>
