@@ -9,12 +9,14 @@ import com.atguigu.gmall.oms.vo.OrderItemVO;
 import com.atguigu.gmall.oms.vo.OrderSubmitVO;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.ums.entity.MemberReceiveAddressEntity;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,10 +34,16 @@ import org.springframework.util.CollectionUtils;
 public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> implements OrderService {
 
     @Autowired
+    private OrderDao orderDao;
+
+    @Autowired
     private OrderItemDao orderItemDao;
 
     @Autowired
     private GmallPmsClient gmallPmsClient;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public PageVo queryPage(QueryCondition params) {
@@ -105,7 +113,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             });
         }
 
+        this.amqpTemplate.convertAndSend("OMS-EXCHANGE", "oms.close", submitVO.getOrderToken());
+
         return orderEntity;
+    }
+
+    @Override
+    public int closeOrder(String orderToken) {
+        return this.orderDao.closeOrder(orderToken);
+    }
+
+    @Override
+    public int success(String orderToken) {
+        return this.orderDao.success(orderToken);
     }
 
 }

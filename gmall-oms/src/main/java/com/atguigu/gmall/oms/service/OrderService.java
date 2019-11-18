@@ -19,5 +19,9 @@ public interface OrderService extends IService<OrderEntity> {
     PageVo queryPage(QueryCondition params);
 
     OrderEntity createOrder(OrderSubmitVO submitVO);
+
+    int closeOrder(String orderToken);
+
+    int success(String orderToken);
 }
 
