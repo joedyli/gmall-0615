@@ -25,7 +25,7 @@ public class RabbitMqConfig {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", "OMS-EXCHANGE");
         arguments.put("x-dead-letter-routing-key", "oms.dead");
-        arguments.put("x-message-ttl", 60000);
+        arguments.put("x-message-ttl", 110000);
         return new Queue("OMS-TTL-QUEUE", true, false, false, arguments);
     }
 

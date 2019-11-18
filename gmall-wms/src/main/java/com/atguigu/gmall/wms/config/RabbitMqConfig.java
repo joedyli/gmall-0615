@@ -23,7 +23,7 @@ public class RabbitMqConfig {
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", "WMS-EXCHANGE");
         arguments.put("x-dead-letter-routing-key", "wms.ttl");
-        arguments.put("x-message-ttl", 90000);
+        arguments.put("x-message-ttl", 120000);
         return new Queue("WMS-TTL-QUEUE", true, false, false, arguments);
     }
 
